@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 
@@ -343,21 +344,27 @@ public class MainFrame extends javax.swing.JFrame {
         ArrayList<Double> data = new ArrayList<>(); 
         double value;
         try {
-            Scanner dataFile = new Scanner(new File(Globals.pathToDataFile));              
-            while(dataFile.hasNextLine()){
-                String line = dataFile.nextLine().trim();
-                //System.out.println("test:");               
-                //System.out.println(line);
-                if(line.isEmpty()){
-                    data.add(data.get(data.size()-1));
-                } else{
-                    data.add(new Double(line)); 
-                }               
-            }                
+            Scanner dataFile = new Scanner(new File(Globals.pathToDataFile)); 
+            try {
+                while(dataFile.hasNextLine()){
+                    String line = dataFile.nextLine().trim();
+                    //System.out.println("test:");               
+                    //System.out.println(line);
+                        if(line.isEmpty()){
+                            data.add(data.get(data.size()-1));
+                        } else{
+                            data.add(new Double(line)); 
+                        }  
+                }
+            } catch(Exception ex){
+                    JOptionPane.showMessageDialog(this, "Bad data format."
+                + " Please check if your data has a point as digital separator.", "Error", 
+                                JOptionPane.ERROR_MESSAGE);
+                }
             dataFile.close();   
             
         } catch (FileNotFoundException ex) {
-        Logger.getLogger(FreqAnalyzer.MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        
         }
         this.setTitle(Globals.pathToDataFile);
         
