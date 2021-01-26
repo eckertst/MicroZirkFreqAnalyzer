@@ -48,3 +48,8 @@ In the menu choose _Transformation_ and click on _fast sine transformation_. The
 We have also put some data samples from our LDF-Recordings into the zip. You may use them to see how the program works.
 
 If you want to test the correctness of the frequency analysis, just simulate some data with excel. There you can use the sine function to generate a data sample with several superimposed oscillations with known frequencies and amplitudes. Then export that sample as txt-file and analyze it with the app. This should work very well. But the peaks of the frequency graph are very sharp, so you have to zoom in a lot, to find them.
+
+## How to get the source code
+
+If you want to take a look at the source code or clone it to change the application for your own purposes go here: [https://github.com/eckertst/MicroZirkFreqAnalyzer/tree/master](https://github.com/eckertst/MicroZirkFreqAnalyzer/tree/master) Make sure to get the "master" branch not the "main".
+You'll find a javadoc.zip there which was automatically generated. It was not maintained consequently during programming but it might be of some help nevertheless. Unzip it and open the index.html with your browser.
