@@ -342,7 +342,8 @@ public class MainFrame extends javax.swing.JFrame {
         //load data
         new FileOpenDialog(this, true).setVisible(true);
         ArrayList<Double> data = new ArrayList<>(); 
-        double value;
+        Double value;
+        int numberOfUnreadable = 0;
         try {
             Scanner dataFile = new Scanner(new File(Globals.pathToDataFile)); 
             try {
@@ -353,7 +354,13 @@ public class MainFrame extends javax.swing.JFrame {
                         if(line.isEmpty()){
                             data.add(data.get(data.size()-1));
                         } else{
-                            data.add(new Double(line)); 
+                            try{
+                                value = Double.valueOf(line);
+                            } catch(Exception ex){
+                                value = data.get(data.size()-1);
+                                numberOfUnreadable++;
+                            }
+                            data.add(value);
                         }  
                 }
             } catch(Exception ex){
@@ -376,6 +383,7 @@ public class MainFrame extends javax.swing.JFrame {
         StandardDeviation standardDev = new StandardDeviation();
         double average;
         double stDev;
+        int numberOfOutliers = 0;
         
         if (!data.isEmpty()){
             if(Globals.replaceOutliers == Globals.REPLACE_OUTLIERS_AUTO){               
@@ -385,6 +393,7 @@ public class MainFrame extends javax.swing.JFrame {
                 for (int i=1; i<data.size(); ++i){
                     if(data.get(i)-average > Globals.outliersTolerance*stDev){
                         data.set(i, data.get(i-1));
+                        numberOfOutliers++;
                     }
                 }
             }
@@ -393,6 +402,7 @@ public class MainFrame extends javax.swing.JFrame {
                     if(data.get(i) < Globals.outliersLowerBound 
                             || data.get(i) > Globals.outliersUpperBound){
                         data.set(i, data.get(i-1));
+                        numberOfOutliers++;
                     }
                 }   
             }
@@ -404,7 +414,13 @@ public class MainFrame extends javax.swing.JFrame {
                 for (int i=0; i<data.size(); ++i){
                     data.set(i, data.get(i)-average);
                 }
-            }            
+            }      
+            
+            JOptionPane.showMessageDialog(this, "Number of replaced unreadable Data values: "
+                    + numberOfUnreadable + "\n"
+                    + "Number of replaced Outliers: " + numberOfOutliers + "\n"
+                    + "Size of Sample: " + data.size()
+                    , "Info", JOptionPane.INFORMATION_MESSAGE);
         }
 
            

@@ -1,65 +1,49 @@
+# Welcome to the MicroZirkFreqAnalyzer!
 
+MicroZirkFreqAnalyzer is a Java desktop application written by me (Stefan Eckert) to provide a simple-to-use tool for frequency analysis of blood flow velocity data collected by laser doppler flowmetry (LDF). It uses parts of the package commons-math3-3.6.1.
+It is provided here "as is" and without any sort of warrenty concerning correctness or usability or anything else. It is published under [Apache license v2.0](https://github.com/eckertst/MicroZirkFreqAnalyzer/blob/main/LICENSE). You are allowed and invited to use, change or expend it according to this license.
 
-------------------------------------------------------------------------------------
-KLEINE ANLEITUNG FÜR DAS PRGRAMM     M I K R O - Z I R K - F R E Q - A N A L Y Z E R
-------------------------------------------------------------------------------------
+## How to use the App
 
+### Install and start
 
-LIZENZ
+1. Get the MicroZirkFreqAnalyzer_1_4.zip file frome here: https://github.com/eckertst/MicroZirkFreqAnalyzer/tree/main and unzip it in any Folder ("your folder") on your computer. 
+2. Go to your folder and run the jar-file MikroZirkFreqAnalyzer1.1.jar there (It's still named 1.1 because my versioning is not very professional...) In Windows a double click should do or rightclick and open with java. If this doesn't work try the command line with `java -jar PathToYourFolder\MikroZirkFreqAnalyzer1.1.jar`
 
-Copyright (C) 2018 Stefan Eckert 
- 
- This program is free software: you can redistribute it and/or modify it under
- the terms of the GNU General Public License as published by the Free Software
- Foundation, either version 3 of the License, or (at your option) any later
- version.
+### Load Data
+The data has to be in a textfile (name.txt oder name.asc), just one number per line. Decimal seperator has to be a point, no comma. Perhaps there are some single lines with rubbish in your data. That's no problem: The app will replace such errors by the value in the line before. With a high sampling rate this doesn't corrupt the data too much.
 
- This program is distributed in the hope that it will be useful, but WITHOUT ANY
- WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License along with
- this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
-INSTALLATION und Programmstart
-
-1. Das Zip-Archiv entpacken, egal wo (wenn nich schon geschehen)
-2. Die Datei MikroZirkFreqAnalyzer.jar starten (Unter Windows müsste das mit Doppelklick gehen, wenn auch der Wachhund bellen wird...)
-3. Man kann sich dann natürlich auch eine Verknüpfung zur jar-Datei auf den Desktop legen, damit man sie später nicht immer suchen muss.
-
-
-DATEN LADEN
-
-Die Daten müssen in einem Textfile (Name.txt oder Name.asc) vorliegen, je eine Zahl in einer Zeile. Dezimaltrenner muss ein Komma sein (kein Punkt). Wenn in manchen Zeilen der Datei Müll steht, ist das nicht schlimm. Der wird automatisch durch die Vorgängerzahl ersetzt.
-Wenn möglich sollte die Datemenge knapp unter einer Zweierpotenz liegen (ca. 10 kleiner). Dann arbeitet der Transformationsalgorithmus am besten.
-Zweierpotenzen sind z.B. 1024, 2048, 4096, 8192, 16384, 32768 oder 65536.
-Programm zum Erstelle/Bearbeiten von Textdateien: Windows hat unter der Rubrik Zubehör einen "Texteditor". Vermutlich guckst du diese Textdatei gerade damit an...
-
+If possible, the number of values should be a little bit smaller (about 10) than a power of two. The Fast Fourier Transform algorithm which is used for frequency analysis works only with exactly a power of two values. Therefore the program fills up with zeroes up to the next power of two, if the number doesn't match. So, if you stay slightly below one of these numbers (1024, 2048, 4096, 8192, 16384, 32768 or 65536) you avoid thousands of additional zeroes that could disturb the analysis.
         
-EINSTELLUNGEN
+### Adjustments
 
 1. Replace Outliers
-Ausreißer können ausgefiltert und ebenfalls durch die Vorgängerzahl ersetzt werden. Je kleiner die Toleranz eingestellt ist (Standard 1) desto strenger wird gefiltert. 
-Wenn ein Datenbild "abgeschnitten" erscheint, einfach die Toleranz vergrößern.
-Wenn ein Datenbild vorwiegend aus senkrechten Strichen besteht, Toleranz verkleinern.
+Outliers can be recognized automatically or manually. They are replaced by the value before. 
+* automatically: the smaller you choose the tolerance value (default 3) the stricter the filter works. If a data graph looks "cut off", just take a higher tolerance to get the maxima into your image. If the data graph consists mainly of vertical lines you have to choose a smaller value because the outliers (vertical lines) give the picture a false scaling.
+* manually: Just give a upper and a lower bound for the values.
 
 2. Sampling Rate
-Das ist die Frequenz, mit der die Messwerte gemacht wurden. Sie muss unbedingt stimmen, weil auf ihr die ganze Darstellung basiert.
+That is the frequency of the recording you have done with some LDF equipment (Values per second). With a false value here the Presentation of the data on the time axis and the frequency analysis will be completely incorrect!
 
 3. Zoom transformed data to ... % of full range
-Da die Frequenzen, die beim Thema Mikrozirkulation interessieren recht niedrig sind, muss man immer ans linke Ende der transformierten Daten zoomen. Hier kann man das voreinstellen. Bei einer Datenmenge von ca 65.000 sind 2% ideal.
+The frequencies in blood flow velocity are low (f < 1,5 1/s). So here you can choose how much of the full frequency range shall be shown after transformation. Of course you can zoom in and out later. 
 
 4. Remove Bias from Data
-Sollte man unbedingt machen, wenn man nicht nur die original Daten anschauen möchte. Bias ist die Verschiebung der Schwingung weg von der x-Achse. Wenn das Häkchen gesetzt ist, wird das Datenbild zur Achse heruntergezogen. Wenn man das nicht macht, kommen die niedrigen Frequenzen (langen Perioden) bei der Transformation nicht gut raus.
+Bias here means the shift of the oscillation away from the x-axis. So removing the bias gives you a graph oscillating around the x-axis as assumed for the FFT-algorithm.
+If you just want to see the origial data, don't remove the bias. But if you want to do a frequency analysis, you should remove it to make the FFT-algorithm  work correctly.
 
+### Zoom/Shift and mark
 
-ZOOMEN/VERSCHIEBEN UND MARKIEREN
+In the area of the window, where the original data is shown, you can change between the two modes zoom/shift and mark. Mark is the default.
+You can save the marked area as a new text file (save as, under the graph). The transform is always done on the complete data sample, not only on the marked area.
+In zoom/shift mode you can zoom with the mouse wheel and shift by left-drag. The frequency area is always in zoom/shift mode.
 
-Im Bereich, indem die Messdaten angezeigt werden, kann man den Modus wechseln zwischen zoom/shift und mark. Markieren ist voreingestellt. Damit kann man auschnitte aus den Daten markieren und in einer neuen Datei abspeichern (save as). Auf die Transformation hat die Markierung keinen Einfluss. Im anderen Modus kann man mit dem Mouse-Rad zoomen und die Anzeige mit links-drag verschieben.
+### Do the analysis
 
+In the menu choose _Transformation_ and click on _fast sine transformation_. There are different types of FFT-algorithms. Fast sine is one of them and the only one implemented here.
 
-DAS PROGRAM TESTEN/AUSPROBIEREN
+### Test the app
 
-Die Datei simSin.txt im Programmordner enthält Daten, die mit Excel künstlich gemacht wurden. Das sind zwei überlagerte Sinuskurven. Die eine hat eine Periodendauer von 3s und eine Amplitude von 2, die andere eine Periode von 1s und eine Amplitude von 1. 
-Die Exceldatei, mit der diese Daten gemacht wurden, ist auch dabei, falls jemand weiter testen bzw. spielen möchte.
+We have also put some data samples from our LDF-Recordings into the zip. You may use them to see how the program works.
+
+If you want to test the correctness of the frequency analysis, just simulate some data with excel. There you can use the sine function to generate a data sample with several superimposed oscillations with known frequencies and amplitudes. Then export that sample as txt-file and analyze it with the app. This should work very well. But the peaks of the frequency graph are very sharp, so you have to zoom in a lot, to find them.
